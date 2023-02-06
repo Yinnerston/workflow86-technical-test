@@ -1,4 +1,5 @@
-FROM eclipse-temurin:17-jdk-jammy
+FROM maven:3.8.3-eclipse-temurin-17
 WORKDIR /app
-COPY src ./src
-CMD ["java", "src/main/java/Technical.java"]
+COPY technical/* .
+RUN mvn package
+CMD ["mvn", "test"]
