@@ -3,7 +3,6 @@
 docker build -t nathan-technical .
 docker run --mount type=bind,source="$(pwd)"/technical,target=/app nathan-technical
 ```
-TODO: Add volume
 
 # Running tests
 ```
