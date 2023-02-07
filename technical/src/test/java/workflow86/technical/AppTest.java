@@ -1,6 +1,9 @@
 package workflow86.technical;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 
 import org.junit.Test;
 
@@ -19,7 +22,11 @@ public class AppTest
      */
     public void testModuleDependenciesNonAlphanumericOrdering()
     {
-        
+        App test_instance = new App();
+        // Define modules
+        test_instance.addModule("A", Arrays.asList("C", "D", "B"));
+        // Check that modules retain the same ordering as when they were first defined
+        assertEquals(test_instance.getModuleDependencies("A"), Arrays.asList("C", "D", "B"));
     }
 
     /**
@@ -37,7 +44,16 @@ public class AppTest
     @Test
     public void testModuleDependenciesExampleOne()
     {
-        //
+        App test_instance = new App();
+        // Define modules
+        test_instance.addModule("A", Arrays.asList("B", "C", "D"));
+        test_instance.addModule("C", Arrays.asList("E", "F", "G"));
+        test_instance.addModule("G", Arrays.asList("H", "I"));
+        // Test correct ordering of dependencies
+        assertEquals(test_instance.getModuleDependencies("G"), Arrays.asList("H", "I"));
+        assertEquals(test_instance.getModuleDependencies("C"), Arrays.asList("E", "F", "H", "I", "G"));
+        assertEquals(test_instance.getModuleDependencies("A"), Arrays.asList("B", "E", "F", "H", "I", "G", "C", "D"));
+
     }
 
     /**
@@ -56,12 +72,21 @@ public class AppTest
     @Test
     public void testModuleDependenciesExampleTwo()
     {
-        //
+        App test_instance = new App();
+        // Define modules
+        test_instance.addModule("A", Arrays.asList("B", "C", "D"));
+        test_instance.addModule("C", Arrays.asList("E", "F", "G"));
+        test_instance.addModule("G", Arrays.asList("H", "I"));
+        test_instance.addModule("I", Arrays.asList("D"));
+        // Test repeated dependencies not resolved
+        assertEquals(test_instance.getModuleDependencies("G"), Arrays.asList("H", "D", "I"));
+        assertEquals(test_instance.getModuleDependencies("C"), Arrays.asList("E", "F", "H", "D", "I", "G"));
+        assertEquals(test_instance.getModuleDependencies("A"), Arrays.asList("B", "E", "F", "H", "D", "I", "G"));
     }
 
 
     /**
-     * Test cyclic dependency resolves as error.
+     * Test cyclic dependency resolves as error for cyclic dependency of Module C.
      * Test example three from the technical challenge
      * Modules:
      * A: B, C, D
@@ -70,15 +95,47 @@ public class AppTest
      * I: C
      * Module Dependencies:
      * G -> {H, D, I}
-     * C -> CyclicDependencyError
-     * A -> CyclicDependencyError
+     * C -> CyclicDependencyException
+     * A -> CyclicDependencyException
      */
-    @Test
-    public void testModuleDependenciesExampleThree()
+    @Test(expected = CyclicDependencyException.class)
+    public void testModuleDependenciesExampleThreeModuleC()
     {
-        //
+        App test_instance = new App();
+        // Define modules
+        test_instance.addModule("A", Arrays.asList("B", "C", "D"));
+        test_instance.addModule("C", Arrays.asList("E", "F", "G"));
+        test_instance.addModule("G", Arrays.asList("H", "I"));
+        test_instance.addModule("I", Arrays.asList("D"));
+        // Test cyclic dependency raises a CyclicDependencyException
+        assertEquals(test_instance.getModuleDependencies("G"), Arrays.asList("H", "D", "I"));
+        test_instance.getModuleDependencies("C");
     }
 
-
-
+    /**
+     * Test cyclic dependency resolves as error for cyclic dependency of Module A.
+     * Test example three from the technical challenge
+     * Modules:
+     * A: B, C, D
+     * C: E, F, G, E
+     * G: H, I
+     * I: C
+     * Module Dependencies:
+     * G -> {H, D, I}
+     * C -> CyclicDependencyException
+     * A -> CyclicDependencyException
+     */
+    @Test(expected = CyclicDependencyException.class)
+    public void testModuleDependenciesExampleThreeModuleA()
+    {
+        App test_instance = new App();
+        // Define modules
+        test_instance.addModule("A", Arrays.asList("B", "C", "D"));
+        test_instance.addModule("C", Arrays.asList("E", "F", "G"));
+        test_instance.addModule("G", Arrays.asList("H", "I"));
+        test_instance.addModule("I", Arrays.asList("D"));
+        // Test cyclic dependency raises a CyclicDependencyException
+        assertEquals(test_instance.getModuleDependencies("G"), Arrays.asList("H", "D", "I"));
+        test_instance.getModuleDependencies("A");
+    }
 }
