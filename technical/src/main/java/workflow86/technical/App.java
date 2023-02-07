@@ -1,6 +1,7 @@
 package workflow86.technical;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
@@ -27,6 +28,10 @@ public class App
         this.modules.put(ModuleID, dependencies);
     }
 
+    public void initModules()   {
+        this.modules = new HashMap<String, List<String>>();
+    }
+
     /**
      * Return Map of moduleIDs: String -> direct dependencies: List<String>
      * @return
@@ -37,18 +42,39 @@ public class App
     }
 
     private ModuleDependencyPair getModuleDependencies(String ModuleID, ModuleDependencyPair deps)
+    throws CyclicDependencyException
     {
         // End condition: No dependencies
-
+        // Do not add duplicates to dependencies
+        List<String> currentDepList = getModules().get(ModuleID);
+        boolean isDuplicateDep = deps.getDependencies().contains(ModuleID);
+        if (currentDepList == null)
+        {
+            if (!isDuplicateDep)    {
+                deps.addDependency(ModuleID);
+            }
+            return deps;
+        }
         // Check for cycles + Add module ID to history
-            // Throw CyclicDependencyException on cycle
-            // Push ModuleID onto stack history
+        if (deps.getHistory().contains(ModuleID))   {
+            throw new CyclicDependencyException(String.format("Cyclic Dependency getting Module %s with history %s", ModuleID, deps.getHistory().toString()));
+        }
+        // Push ModuleID onto stack history
+        deps.pushHistory(ModuleID);
 
-        // Iterate through dependencies
+        // Iterate through dependencies of current ModuleID
+        for (String nextDependencyID: currentDepList)
+        {
             // Recursive step
-            // Remove most-recently added duplicate dependencies
+            getModuleDependencies(nextDependencyID, deps);
+        }
         // Add to ModuleID to dependencies if not already in it?
+        if (!isDuplicateDep && !(deps.getHistory().size() == 1))
+        {
+            deps.addDependency(ModuleID);
+        }
         // Pop ModuleID off of stack history
+        assert ModuleID == deps.popHistory();
         // Return deps
         return deps;
     }
@@ -59,6 +85,7 @@ public class App
      * @return
      */
     public List<String> getModuleDependencies(String ModuleID)
+    throws CyclicDependencyException
     {
         List<String> deps = new ArrayList<String>();
         Stack<String> history = new Stack<String>();

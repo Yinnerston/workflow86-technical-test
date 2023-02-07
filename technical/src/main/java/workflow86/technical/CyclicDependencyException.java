@@ -5,4 +5,8 @@ extends RuntimeException {
     public CyclicDependencyException(String errorMessage, Throwable err) {
         super(errorMessage, err);
     }
+
+    public CyclicDependencyException(String errorMessage) {
+        super(errorMessage);
+    }
 }
