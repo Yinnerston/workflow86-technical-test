@@ -23,7 +23,7 @@ public class AppTest
      * Setup test_instance as new App.
      */
     @Before
-    protected void setUp()
+    public void setUp()
     {
         test_instance = new App();
     } 
