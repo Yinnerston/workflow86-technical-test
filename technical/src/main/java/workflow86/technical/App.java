@@ -1,9 +1,11 @@
 package workflow86.technical;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Stack;
 
 /**
@@ -15,7 +17,49 @@ public class App
     protected Map<String, List<String>> modules;
     public static void main( String[] args )
     {
-        System.out.println( "Hello World!" );
+        App instance = new App();
+        instance.initModules();
+        Scanner inputScanner = new Scanner(System.in);
+        System.out.println("Type \"next\" to query module dependencies");
+        // Use scanner to add all dependencies
+        while (true)
+        {
+            System.out.println("Add Module. Format %s:%s, %s, ... , %s");
+            String moduleDeps = inputScanner.nextLine();
+            if (moduleDeps.toLowerCase().contains("next"))
+            {
+                break;
+            }
+            String[] dependency = moduleDeps.split(":\\pZ", 2);
+            String moduleID = dependency[0];
+            // Strip whitespace
+            String[] dependentModules = dependency[1].split(",", 0);
+            for (int i = 0; i < dependentModules.length; i++){
+                dependentModules[i] = dependentModules[i].trim();
+            }
+            instance.addModule(moduleID, Arrays.asList(dependentModules));
+        }
+        // Query dependencies
+        System.out.println("Type \"next\" to query module dependencies");
+        Map<String, List<String>> modules = instance.getModules();
+        System.out.println(modules.toString());
+        while (true)
+        {
+            System.out.println("Get dependencies for %s");
+            String moduleID = inputScanner.nextLine();
+            if (moduleID == "next")
+            {
+                break;
+            }
+            if (modules.containsKey(moduleID))
+            {
+                System.out.println(instance.getModuleDependencies(moduleID));
+            } else
+            {
+                System.out.println(moduleID + " has no dependencies");
+            }
+        }
+        inputScanner.close();
     }
 
     /**
