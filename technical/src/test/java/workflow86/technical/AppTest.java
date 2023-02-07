@@ -1,10 +1,10 @@
 package workflow86.technical;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -12,6 +12,17 @@ import org.junit.Test;
  */
 public class AppTest 
 {
+    private App test_instance;
+
+
+    /**
+     * Setup test_instance as new App.
+     */
+    @Before
+    protected void setUp()
+    {
+        test_instance = new App();
+    } 
     /**
      * Test module dependencies where the dependencies are not order alphanumerically.
      * Dependencies retain the ordering defined in the module when not ordered alphanumerically.
@@ -22,7 +33,6 @@ public class AppTest
      */
     public void testModuleDependenciesNonAlphanumericOrdering()
     {
-        App test_instance = new App();
         // Define modules
         test_instance.addModule("A", Arrays.asList("C", "D", "B"));
         // Check that modules retain the same ordering as when they were first defined
@@ -44,7 +54,6 @@ public class AppTest
     @Test
     public void testModuleDependenciesExampleOne()
     {
-        App test_instance = new App();
         // Define modules
         test_instance.addModule("A", Arrays.asList("B", "C", "D"));
         test_instance.addModule("C", Arrays.asList("E", "F", "G"));
@@ -72,7 +81,6 @@ public class AppTest
     @Test
     public void testModuleDependenciesExampleTwo()
     {
-        App test_instance = new App();
         // Define modules
         test_instance.addModule("A", Arrays.asList("B", "C", "D"));
         test_instance.addModule("C", Arrays.asList("E", "F", "G"));
@@ -101,7 +109,6 @@ public class AppTest
     @Test(expected = CyclicDependencyException.class)
     public void testModuleDependenciesExampleThreeModuleC()
     {
-        App test_instance = new App();
         // Define modules
         test_instance.addModule("A", Arrays.asList("B", "C", "D"));
         test_instance.addModule("C", Arrays.asList("E", "F", "G"));
@@ -128,7 +135,6 @@ public class AppTest
     @Test(expected = CyclicDependencyException.class)
     public void testModuleDependenciesExampleThreeModuleA()
     {
-        App test_instance = new App();
         // Define modules
         test_instance.addModule("A", Arrays.asList("B", "C", "D"));
         test_instance.addModule("C", Arrays.asList("E", "F", "G"));
