@@ -30,7 +30,7 @@ public class App
             {
                 break;
             }
-            String[] dependency = moduleDeps.split(":\\pZ", 2);
+            String[] dependency = moduleDeps.split(":", 2);
             String moduleID = dependency[0];
             // Strip whitespace
             String[] dependentModules = dependency[1].split(",", 0);
