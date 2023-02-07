@@ -1,14 +1,17 @@
-# Running the technical
+# Running tests
+Can check `techncial/target/surefire-reports/workflow86.technical.AppTest.txt` to confirm tests passed
 ```
-docker build -t nathan-technical .
+docker build --target test -t nathan-technical .
 docker run --mount type=bind,source="$(pwd)"/technical,target=/app nathan-technical
 ```
 
-# Running tests
-```
-docker build -t nathan-technical .
-docker run --mount type=bind,source="$(pwd)"/technical,target=/app nathan-technical
-```
+# Running the technical
+Takes user input.
+To run on your own computer:
+- Install jdk17
+- `cd technical/src/main/java`
+- `javac workflow86/technical/*.java`
+- `java workflow86.technical.App`
 
 # Steps
 - Setup maven dependencies https://maven.apache.org/guides/getting-started/maven-in-five-minutes.html
