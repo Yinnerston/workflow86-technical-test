@@ -1,12 +1,8 @@
 package workflow86.technical;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +22,7 @@ public class AppTest
     public void setUp()
     {
         test_instance = new App();
+        test_instance.initModules();
     } 
     /**
      * Test module dependencies where the dependencies are not order alphanumerically.
@@ -40,7 +37,7 @@ public class AppTest
         // Define modules
         test_instance.addModule("A", Arrays.asList("C", "D", "B"));
         // Check that modules retain the same ordering as when they were first defined
-        assertEquals(test_instance.getModuleDependencies("A"), Arrays.asList("C", "D", "B"));
+        assertEquals(Arrays.asList("C", "D", "B"), test_instance.getModuleDependencies("A"));
     }
 
     // /**
@@ -79,9 +76,9 @@ public class AppTest
         test_instance.addModule("C", Arrays.asList("E", "F", "G"));
         test_instance.addModule("G", Arrays.asList("H", "I"));
         // Test correct ordering of dependencies
-        assertEquals(test_instance.getModuleDependencies("G"), Arrays.asList("H", "I"));
-        assertEquals(test_instance.getModuleDependencies("C"), Arrays.asList("E", "F", "H", "I", "G"));
-        assertEquals(test_instance.getModuleDependencies("A"), Arrays.asList("B", "E", "F", "H", "I", "G", "C", "D"));
+        assertEquals(Arrays.asList("H", "I"), test_instance.getModuleDependencies("G"));
+        assertEquals(Arrays.asList("E", "F", "H", "I", "G"), test_instance.getModuleDependencies("C"));
+        assertEquals(Arrays.asList("B", "E", "F", "H", "I", "G", "C", "D"), test_instance.getModuleDependencies("A"));
 
     }
 
@@ -106,10 +103,10 @@ public class AppTest
         test_instance.addModule("C", Arrays.asList("E", "F", "G"));
         test_instance.addModule("G", Arrays.asList("H", "I"));
         test_instance.addModule("I", Arrays.asList("D"));
-        // Test repeated dependencies not resolved
-        assertEquals(test_instance.getModuleDependencies("G"), Arrays.asList("H", "D", "I"));
-        assertEquals(test_instance.getModuleDependencies("C"), Arrays.asList("E", "F", "H", "D", "I", "G"));
-        assertEquals(test_instance.getModuleDependencies("A"), Arrays.asList("B", "E", "F", "H", "D", "I", "G"));
+        // Test repeated dependencies not resolved        
+        assertEquals(Arrays.asList("H", "D", "I"), test_instance.getModuleDependencies("G"));
+        assertEquals(Arrays.asList("E", "F", "H", "D", "I", "G"), test_instance.getModuleDependencies("C"));
+        assertEquals(Arrays.asList("B", "E", "F", "H", "D", "I", "G"), test_instance.getModuleDependencies("A"));
     }
 
 
@@ -135,7 +132,7 @@ public class AppTest
         test_instance.addModule("G", Arrays.asList("H", "I"));
         test_instance.addModule("I", Arrays.asList("D"));
         // Test cyclic dependency raises a CyclicDependencyException
-        assertEquals(test_instance.getModuleDependencies("G"), Arrays.asList("H", "D", "I"));
+        assertEquals(Arrays.asList("H", "D", "I"), test_instance.getModuleDependencies("G"));
         test_instance.getModuleDependencies("C");
     }
 
@@ -161,7 +158,7 @@ public class AppTest
         test_instance.addModule("G", Arrays.asList("H", "I"));
         test_instance.addModule("I", Arrays.asList("D"));
         // Test cyclic dependency raises a CyclicDependencyException
-        assertEquals(test_instance.getModuleDependencies("G"), Arrays.asList("H", "D", "I"));
+        assertEquals(Arrays.asList("H", "D", "I"), test_instance.getModuleDependencies("G"));
         test_instance.getModuleDependencies("A");
     }
 }
