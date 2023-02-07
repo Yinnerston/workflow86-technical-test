@@ -1,8 +1,12 @@
 package workflow86.technical;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +42,22 @@ public class AppTest
         // Check that modules retain the same ordering as when they were first defined
         assertEquals(test_instance.getModuleDependencies("A"), Arrays.asList("C", "D", "B"));
     }
+
+    // /**
+    //  * Test adding modules functionality is valid.
+    //  * Test overwriting of module dependencies is idempotent.
+    //  */
+    // public void testAddModules()
+    // {
+    //     // Add some modules
+    //     test_instance.addModule("A", Arrays.asList("B", "C", "D"));
+    //     test_instance.addModule("X", Arrays.asList("E", "F", "G"));
+    //     // Check mapping is correct
+    //     Map<String, List<String>> correctMap = new HashMap<String, List<String>>();
+    //     correctMap.put("A", Arrays.asList("B", "C", "D"));
+    //     correctMap.put("X", Arrays.asList("E", "F", "G"));
+    //     assertEquals(test_instance, correctMap);
+    // }
 
     /**
      * Test correct ordering of dependencies.
